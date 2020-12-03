@@ -1,7 +1,23 @@
+/**
+ * Represents the Compiled program as an array of byte code.
+ *
+ * @class CompiledProgram
+ */
 class CompiledProgram {
+    /**
+     * Creates an instance of CompiledProgram.
+     * @param {*} byte_code_list
+     * @memberof CompiledProgram
+     */
     constructor(byte_code_list) {
         this._byte_code = byte_code_list;
     }
+    /**
+     * Returns the byte Code
+     *
+     * @return {*} 
+     * @memberof CompiledProgram
+     */
     byte_code() {
         return this._byte_code;
     }
@@ -9,14 +25,36 @@ class CompiledProgram {
 
 
 
+/**
+ * Contains the method for compiling the program from the AST to ByteCode.
+ *
+ * @class Compiler
+ */
 class Compiler {
+    /**
+     * Creates an instance of Compiler.
+     * @memberof Compiler
+     */
     constructor() {
         this._bytecode = [];
     }
+    /**
+     * Self explanatory
+     *
+     * @param {*} ast
+     * @return {*} 
+     * @memberof Compiler
+     */
     compile(ast) {
         ast.accept(this);
         return new CompiledProgram(this._bytecode);
     }
+    /**
+     * Take a peek at the AST Node
+     *
+     * @param {*} astNode
+     * @memberof Compiler
+     */
     visit(astNode) {
         if (astNode.isWhileNode()) {
             this._visitWhile(astNode);
@@ -27,6 +65,12 @@ class Compiler {
             astNode.next().accept(this);
         }
     }
+    /**
+     * Handles the While conditions from the AST
+     *
+     * @param {*} whileNode
+     * @memberof Compiler
+     */
     _visitWhile(whileNode) {
         var current_op_index = this._bytecode.length;
         this._bytecode.push({
@@ -41,6 +85,12 @@ class Compiler {
         });
         this._bytecode[current_op_index].index = this._bytecode.length;
     }
+    /**
+     * Handles every other condition excluding While
+     *
+     * @param {*} astNode
+     * @memberof Compiler
+     */
     _visitNonWhile(astNode) {
         if (astNode.isMoveRightNode()) {
             this._bytecode.push({
